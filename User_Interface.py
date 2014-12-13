@@ -56,11 +56,12 @@ def newUserWindow():
 
     select_username_lbl=Label(root3,text="User Name: ")
     select_password_lbl=Label(root3,text="Password: ")
-    height_label=Label(root3,text="Height: ")
-    weight_label=Label(root3,text="Weight: ")
+    height_label=Label(root3,text="Height(cm): ")
+    weight_label=Label(root3,text="Weight(kg): ")
     age_label=Label(root3,text="Age: ")
     goal_label=Label(root3,text="Select Goal: ")
     gender_label=Label(root3,text="Gender: ")
+    exercise_label=Label(root3,text="Exercise Intencity: ")
 
     username_entry=Entry(root3,width=30)
     password_entry=Entry(root3,width=30)
@@ -70,6 +71,7 @@ def newUserWindow():
 
     radiovar=IntVar()
     radiovar2=IntVar()
+    radiovar3=IntVar()
 
     rb1=Radiobutton(root3,text="Lose 1 kg per week",variable=radiovar,value=1)
     rb2=Radiobutton(root3,text="Lose 0.8 kg per week",variable=radiovar,value=2)
@@ -84,13 +86,21 @@ def newUserWindow():
     rb10=Radiobutton(root3,text="Male",variable=radiovar2,value=1)
     rb11=Radiobutton(root3,text="Female",variable=radiovar2,value=2)
 
+    rb12=Radiobutton(root3,text="Little to no exercise",variable=radiovar3,value=1)
+    rb13=Radiobutton(root3,text="Light exercise (1-3 days per week)",variable=radiovar3,value=2)
+    rb14=Radiobutton(root3,text="Moderate exercise (3-5 days per week)",variable=radiovar3,value=3)
+    rb15=Radiobutton(root3,text="Heavy exercise (6-7 days per week)", variable=radiovar3,value=4)
+    rb16=Radiobutton(root3,text="Very heavy exercise (twice per day, extra heavy workuts)", variable=radiovar3,value=5)
+
     select_username_lbl.grid(row=1,column=1)
     select_password_lbl.grid(row=2,column=1)
     height_label.grid(row=3,column=1)
     weight_label.grid(row=4,column=1)
     age_label.grid(row=5,column=1)
     gender_label.grid(row=6,column=1)
-    goal_label.grid(row=8,column=1)
+    exercise_label.grid(row=8,column=1)
+    goal_label.grid(row=13,column=1)
+
 
     username_entry.grid(row=1,column=2)
     password_entry.grid(row=2,column=2)
@@ -101,46 +111,54 @@ def newUserWindow():
     rb10.grid(row=6,column=2)
     rb11.grid(row=7,column=2)
 
-    rb1.grid(row=8,column=2)
-    rb2.grid(row=9,column=2)
-    rb3.grid(row=10,column=2)
-    rb4.grid(row=11,column=2)
-    rb5.grid(row=12,column=2)
-    rb6.grid(row=13,column=2)
-    rb7.grid(row=14,column=2)
-    rb8.grid(row=15,column=2)
-    rb9.grid(row=16,column=2)
+    rb12.grid(row=8,column=2)
+    rb13.grid(row=9,column=2)
+    rb14.grid(row=10,column=2)
+    rb15.grid(row=11,column=2)
+    rb16.grid(row=12,column=2)
+
+    rb1.grid(row=13,column=2)
+    rb2.grid(row=14,column=2)
+    rb3.grid(row=15,column=2)
+    rb4.grid(row=16,column=2)
+    rb5.grid(row=17,column=2)
+    rb6.grid(row=18,column=2)
+    rb7.grid(row=19,column=2)
+    rb8.grid(row=20,column=2)
+    rb9.grid(row=21,column=2)
 
 
     def add_to_database():
         db=sqlite3.connect("user_data.db")
         if username_entry.get()=="" or password_entry.get()=="" or\
             height_entry.get()=="" or weight_entry.get()=="" or \
-            age_entry.get()=="": tkMessageBox.showerror("Error","Please fill in the\n required fields")
-
-        im=db.cursor()
-        user=username_entry.get()
-        password=password_entry.get()
-        height=float(height_entry.get())
-        weight=float(weight_entry.get())
-        age=int(age_entry.get())
-        goal=radiovar.get()
-        weight2=weight
-        gender=radiovar2.get()
-        userlst.append(user)
-        userlst.append(password)
-        data=(user,password,age,weight,height,gender,goal,weight2)
-        im.execute("""INSERT INTO user_info VALUES (?,?,?,?,?,?,?,?)""",data)
-        im.close()
-        db.commit()
-        db.close()
-        root3.destroy()
-        welcome_window()
+            age_entry.get()=="" or radiovar.get()==0 or radiovar2.get()==0 or radiovar3.get()==0:
+                tkMessageBox.showerror("Error","Please fill in the\n required fields")
+        else:
+            im=db.cursor()
+            user=username_entry.get()
+            password=password_entry.get()
+            height=float(height_entry.get())
+            weight=float(weight_entry.get())
+            age=int(age_entry.get())
+            exercise=radiovar3.get()
+            goal=radiovar.get()
+            weight2=weight
+            gender=radiovar2.get()
+            userlst.append(user)
+            userlst.append(password)
+            data=(user,password,age,weight,height,gender,exercise,goal,weight2)
+            im.execute("""INSERT INTO user_info VALUES (?,?,?,?,?,?,?,?,?)""",data)
+            im.close()
+            db.commit()
+            db.close()
+            root3.destroy()
+            welcome_window()
 
 
 
     sign_up_button=Button(root3,text="Sign Up",width=30,command=add_to_database)
-    sign_up_button.grid(row=17,column=1,columnspan=2)
+    sign_up_button.grid(row=22,column=1,columnspan=2)
 
     root3.mainloop()
 
