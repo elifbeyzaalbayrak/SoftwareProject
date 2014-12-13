@@ -136,23 +136,28 @@ def newUserWindow():
         else:
             im=db.cursor()
             user=username_entry.get()
-            password=password_entry.get()
-            height=float(height_entry.get())
-            weight=float(weight_entry.get())
-            age=int(age_entry.get())
-            exercise=radiovar3.get()
-            goal=radiovar.get()
-            weight2=weight
-            gender=radiovar2.get()
-            userlst.append(user)
-            userlst.append(password)
-            data=(user,password,age,weight,height,gender,exercise,goal,weight2)
-            im.execute("""INSERT INTO user_info VALUES (?,?,?,?,?,?,?,?,?)""",data)
-            im.close()
-            db.commit()
-            db.close()
-            root3.destroy()
-            welcome_window()
+            im.execute("""SELECT * FROM user_info where username=?""",(user,))
+            check=im.fetchone()
+            if check!=None:
+                tkMessageBox.showerror("Error!","Username already exists")
+            else:
+                password=password_entry.get()
+                height=float(height_entry.get())
+                weight=float(weight_entry.get())
+                age=int(age_entry.get())
+                exercise=radiovar3.get()
+                goal=radiovar.get()
+                weight2=weight
+                gender=radiovar2.get()
+                userlst.append(user)
+                userlst.append(password)
+                data=(user,password,age,weight,height,gender,exercise,goal,weight2)
+                im.execute("""INSERT INTO user_info VALUES (?,?,?,?,?,?,?,?,?)""",data)
+                im.close()
+                db.commit()
+                db.close()
+                root3.destroy()
+                welcome_window()
 
 
 
@@ -163,15 +168,20 @@ def newUserWindow():
 
 def welcome_window():
     root4=Tk()
+    root4.title("Calorie Counter")
     kcal_goal=user_calorie_goal(userlst)
+    bmi=calculate_body_mass_index(userlst)
+    user_state=status(bmi)
     kcal_goal_label=Label(root4,text="Recommended daily kcal intake: ")
     kcal_goal_label2=Label(root4,text=str(kcal_goal))
+    user_state_label=Label(root4,text="BMI: "+str(bmi)+" ("+user_state+")")
     kcal_goal_label.grid(row=1,column=1)
     kcal_goal_label2.grid(row=1,column=2)
+    user_state_label.grid(row=2,column=1,columnspan=2)
     root4.mainloop()
 
 root=Tk()
-root.title("LogIn")
+root.title("Log In or Register")
 
 content=Frame(root)
 login=Button(content,text="Log In",command=logInWindow,width=15)

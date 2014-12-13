@@ -1,6 +1,7 @@
 __author__ = 'elifalbayrak'
 
 import sqlite3
+import math
 def calculate_basal_metabolic_rate(gender,weight,height,age):
     if gender==1:
         bmr=66.473+(13.7516*weight)+(5.0033*height)-(6.7550*age)
@@ -98,3 +99,27 @@ def user_calorie_goal(lst):
     kcal_need=calculate_daily_kcal_intake_need(bmr,exercise)
     kcal_goal=calorie_goal(kcal_need,goal)
     return kcal_goal
+
+def calculate_body_mass_index(lst):
+    username=lst[0]
+    password=lst[1]
+    db=sqlite3.connect("user_data.db")
+    im=db.cursor()
+    im.execute("""SELECT * FROM user_info where username=? and password=?""",(username,password))
+    user_info=im.fetchone()
+    height=user_info[4]
+    weight2=user_info[8]
+    bmi=weight2/(height/100)**2
+    return bmi
+
+def status(bmi):
+    if bmi<18.5:
+        return "Underweight"
+    if 18.5<=bmi<=22.9:
+        return "Normal Weight"
+    if 23.0<=bmi<=24.9:
+        return "At Risk Overweight"
+    if 25.0<=bmi<=29.9:
+        return "Moderately Obese"
+    if bmi>=30.0:
+        return "Severely Obese"
