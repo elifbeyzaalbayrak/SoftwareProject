@@ -3,10 +3,9 @@ from Tkinter import *
 import tkMessageBox
 import sqlite3
 import time
+from calculators import *
 
 userlst=[]
-
-
 
 def logInWindow():
     root.destroy()
@@ -164,6 +163,11 @@ def newUserWindow():
 
 def welcome_window():
     root4=Tk()
+    kcal_goal=user_calorie_goal(userlst)
+    kcal_goal_label=Label(root4,text="Recommended daily kcal intake: ")
+    kcal_goal_label2=Label(root4,text=str(kcal_goal))
+    kcal_goal_label.grid(row=1,column=1)
+    kcal_goal_label2.grid(row=1,column=2)
     root4.mainloop()
 
 root=Tk()
