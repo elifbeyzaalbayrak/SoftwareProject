@@ -98,7 +98,7 @@ def user_calorie_goal(lst):
     bmr=calculate_basal_metabolic_rate(gender,weight2,height,age)
     kcal_need=calculate_daily_kcal_intake_need(bmr,exercise)
     kcal_goal=calorie_goal(kcal_need,goal)
-    return kcal_goal
+    return math.floor(kcal_goal)
 
 def calculate_body_mass_index(lst):
     username=lst[0]
@@ -110,16 +110,22 @@ def calculate_body_mass_index(lst):
     height=user_info[4]
     weight2=user_info[8]
     bmi=weight2/(height/100)**2
-    return bmi
+    return math.floor(bmi)
 
 def status(bmi):
-    if bmi<18.5:
+    if bmi<15.0:
+        return "Very Severely Underweight"
+    if 15.0<=bmi<16.0:
+        return "Severely Underweight"
+    if 16.0<=bmi<18.5:
         return "Underweight"
-    if 18.5<=bmi<=22.9:
-        return "Normal Weight"
-    if 23.0<=bmi<=24.9:
-        return "At Risk Overweight"
-    if 25.0<=bmi<=29.9:
+    if 18.5<=bmi<25.0:
+        return "Healthy Weight"
+    if 25.0<=bmi<30.0:
+        return "Overweight"
+    if 30.0<=bmi<35.0:
         return "Moderately Obese"
-    if bmi>=30.0:
+    if 35.0<=bmi<40.0:
         return "Severely Obese"
+    if bmi>=40.0:
+        return "Very Severely Obese"

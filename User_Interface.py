@@ -16,7 +16,7 @@ def logInWindow():
     label_password=Label(root2,text="Enter Password: ")
 
     username_entry=Entry(root2,width=30)
-    password_entry=Entry(root2,width=30)
+    password_entry=Entry(root2,width=30,show="*")
 
     label_username.grid(row=1,column=1)
     label_password.grid(row=2,column=1)
@@ -63,7 +63,7 @@ def newUserWindow():
     exercise_label=Label(root3,text="Exercise Intencity: ")
 
     username_entry=Entry(root3,width=30)
-    password_entry=Entry(root3,width=30)
+    password_entry=Entry(root3,width=30,show="*")
     height_entry=Entry(root3,width=30)
     weight_entry=Entry(root3,width=30)
     age_entry=Entry(root3,width=30)
@@ -166,18 +166,161 @@ def newUserWindow():
 
     root3.mainloop()
 
+def update_weight():
+    root5=Tk()
+    update_weight_label=Label(root5,text="Update Weight: ")
+    weight_entry=Entry(root5,width=15)
+    update_weight_label.grid(row=1,column=1)
+    weight_entry.grid(row=1,column=2)
+
+    def update():
+        weight=weight_entry.get()
+        weight2=float(weight)
+        user=userlst[0]
+        db=sqlite3.connect("user_data.db")
+        im=db.cursor()
+        im.execute("""UPDATE user_info SET weight2=? where username=?""",(weight2,user))
+        im.close()
+        db.commit()
+        db.close()
+        root5.destroy()
+        welcome_window()
+
+    update_button=Button(root5,width=30,command=update,text="Update")
+    update_button.grid(row=2,column=1,columnspan=2)
+
+def change():
+    master = Tk()
+    v = IntVar()
+
+    def readrbutton():
+        value=v.get()
+        user = userlst[0]
+        db=sqlite3.connect("user_data.db")
+        im=db.cursor()
+        im.execute("""UPDATE user_info SET goal=? where username=?""",(value,user))
+        db.commit()
+        master.destroy()
+        welcome_window()
+
+    a=Radiobutton(master, text="Lose 1 kg per week", variable=v, value=1)
+    b=Radiobutton(master, text="Lose 0.8 kg per week", variable=v, value=2)
+    c=Radiobutton(master, text="Lose 0.5 kg per week", variable=v, value=3)
+    d=Radiobutton(master, text="Lose 0.2 kg per week", variable=v, value=4)
+    e=Radiobutton(master, text="Maintain your weight", variable=v, value=5)
+    f=Radiobutton(master, text="Gain 0.2 kg per week", variable=v, value=6)
+    g=Radiobutton(master, text="Gain 0.5 kg per week", variable=v, value=7)
+    h=Radiobutton(master, text="Gain 0.8 kg per week", variable=v, value=8)
+    i=Radiobutton(master, text="Gain 1 kg per week", variable=v, value=9)
+
+    a.grid(row=1,column=1)
+    b.grid(row=2,column=1)
+    c.grid(row=3,column=1)
+    d.grid(row=4,column=1)
+    e.grid(row=5,column=1)
+    f.grid(row=6,column=1)
+    g.grid(row=7,column=1)
+    h.grid(row=8,column=1)
+    i.grid(row=9,column=1)
+
+    update_button=Button(master,text="Update",width=30,command=readrbutton)
+    update_button.grid(row=10,column=1,columnspan=2)
+
+    mainloop()
+
+def quick_add_calorie():
+
+    master=Tk()
+    kcal_label=Label(master,text="Kcal: ")
+    food_name=Label(master,text="Food Name: ")
+
+    kcal_entry=Entry(master,width=30)
+    food_name_entry=Entry(master,width=30)
+
+    kcal_label.grid(row=2,column=1)
+    kcal_entry.grid(row=2,column=2)
+    food_name.grid(row=1,column=1)
+    food_name_entry.grid(row=1,column=2)
+
+    def add():
+        user=userlst[0]
+        now = time.localtime(time.time())
+        year, month, day, hour, minute, second, weekday, yearday, daylight = now
+        kcal=float(kcal_entry.get())
+        carbs=0
+        protein=0
+        fat=0
+        amount=1
+        weight2=userlst[2]
+        data=(user,weight2,year,month,day,kcal,carbs,protein,fat,amount)
+        db=sqlite3.connect("user_data.db")
+        im=db.cursor()
+        im.execute("""INSERT INTO user_info2 VALUES (?,?,?,?,?,?,?,?,?,?)""",data)
+        im.close()
+        db.commit()
+        db.close()
+        master.destroy()
+        welcome_window()
+
+
+    add_button=Button(master,text="Add",width=60,command=add)
+    add_button.grid(row=3,column=1,columnspan=2)
+    master.mainloop()
+
 def welcome_window():
+    db=sqlite3.connect("user_data.db")
+    im=db.cursor()
+    user=userlst[0]
+    im.execute("""SELECT * FROM  user_info WHERE username=?""",(user,))
+    data=im.fetchone()
+    userlst.append(data[8])
+    weight_lost=data[3]-data[8]
     root4=Tk()
     root4.title("Calorie Counter")
+
     kcal_goal=user_calorie_goal(userlst)
     bmi=calculate_body_mass_index(userlst)
     user_state=status(bmi)
+
+    def update_w():
+        root4.destroy()
+        update_weight()
+
+    def change_goal():
+        root4.destroy()
+        change()
+
+    def quick_add():
+        root4.destroy()
+        quick_add_calorie()
+
     kcal_goal_label=Label(root4,text="Recommended daily kcal intake: ")
-    kcal_goal_label2=Label(root4,text=str(kcal_goal))
+    kcal_goal_label2=Label(root4,text=str(kcal_goal)+"kcal")
     user_state_label=Label(root4,text="BMI: "+str(bmi)+" ("+user_state+")")
+    calorie_left_label=Label(root4,text="Calorie Left: ")
+    calorie_left_label2=Label(root4,text=str(kcal_goal)+"kcal")
+
+    weight_lost_label=Label(root4,text="Weight Lost: ")
+    weight_lost_label2=Label(root4,text=str(weight_lost))
+    update_weight_button=Button(root4,text="Update Weight",width=30,command=update_w)
+    change_goal_button=Button(root4,text="Change Goal",width=30,command=change_goal)
+    add_food_button=Button(root4,text="Add Food",width=30)
+    quick_add_button=Button(root4,text="Quick-Add Calories",width=30,command=quick_add)
+    exit_button=Button(root4,text="Exit",command=root4.destroy,width=30)
+
     kcal_goal_label.grid(row=1,column=1)
     kcal_goal_label2.grid(row=1,column=2)
     user_state_label.grid(row=2,column=1,columnspan=2)
+    calorie_left_label.grid(row=3,column=1)
+    calorie_left_label2.grid(row=3,column=2)
+    weight_lost_label2.grid(row=4,column=2)
+    weight_lost_label.grid(row=4,column=1)
+    update_weight_button.grid(row=1,column=3)
+    change_goal_button.grid(row=2,column=3)
+    add_food_button.grid(row=3,column=3)
+    quick_add_button.grid(row=4,column=3)
+    exit_button.grid(row=5,column=1,columnspan=3)
+
     root4.mainloop()
 
 root=Tk()
