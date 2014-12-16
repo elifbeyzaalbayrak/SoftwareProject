@@ -34,15 +34,13 @@ with open('nut_data.csv', 'rb') as f:
 
 
 im = db.cursor()
-im.execute("""CREATE TABLE nut_data (Food_Name,Kcal,Protein,Fat,Carbs,Amount)""")
+#im.execute("""CREATE TABLE nut_data (Food_Name,Kcal,Protein,Fat,Carbs,Amount)""")
 
-for i in lst:
-    im.execute("""INSERT INTO nut_data VALUES (?,?,?,?,?,?)""" ,i)
+#for i in lst:
+ #   im.execute("""INSERT INTO nut_data VALUES (?,?,?,?,?,?)""" ,i)
 
 db.commit()
 
 im.execute("""SELECT * FROM nut_data""")
 veriler=im.fetchall()
-for a,b,c,d,e,f in veriler:
-    if 'APPLE' in a:
-        print a,b,c,d,e,f
+for i in veriler:print i

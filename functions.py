@@ -129,3 +129,21 @@ def status(bmi):
         return "Severely Obese"
     if bmi>=40.0:
         return "Very Severely Obese"
+
+def database_call_food(searchword):
+    food_list=[]
+    db=sqlite3.connect("food_database.db")
+    db.text_factory=str
+    im=db.cursor()
+    searchword2=searchword.upper()
+    im.execute("""SELECT Food_Name FROM nut_data """)
+    data=im.fetchall()
+    for food in data:
+        for food2 in food:
+            if searchword2 in food2:
+                food_list.append(food2)
+    return food_list
+
+
+
+

@@ -3,12 +3,11 @@ from Tkinter import *
 import tkMessageBox
 import sqlite3
 import time
-from calculators import *
+from functions import *
 
 userlst=[]
 
 def logInWindow():
-    root.destroy()
     root2=Tk()
     root2.title("Log In")
 
@@ -41,15 +40,20 @@ def logInWindow():
             root2.destroy()
             welcome_window()
 
+    def back():
+        root2.destroy()
+        first_window()
+
 
     login_button=Button(root2,text="Log In",width=30,command=check_user_info)
     login_button.grid(row=3,column=1,columnspan=2)
+    back_button=Button(root2,text="<< Back",width=30,command=back)
+    back_button.grid(row=4,column=1,columnspan=2)
 
 
     root2.mainloop()
 
 def newUserWindow():
-    root.destroy()
     root3=Tk()
     root3.title("New User")
 
@@ -160,9 +164,14 @@ def newUserWindow():
                 welcome_window()
 
 
+    def back():
+        root3.destroy()
+        first_window()
 
     sign_up_button=Button(root3,text="Sign Up",width=30,command=add_to_database)
     sign_up_button.grid(row=22,column=1,columnspan=2)
+    back_button=Button(root3,text="<< Back",width=30,command=back)
+    back_button.grid(row=23,column=1,columnspan=2)
 
     root3.mainloop()
 
@@ -186,8 +195,14 @@ def update_weight():
         root5.destroy()
         welcome_window()
 
+    def back():
+        root5.destroy()
+        welcome_window()
+
     update_button=Button(root5,width=30,command=update,text="Update")
     update_button.grid(row=2,column=1,columnspan=2)
+    back_button=Button(root5,width=30,command=back,text="<< Back")
+    back_button.grid(row=3,column=1,columnspan=2)
 
 def change():
     master = Tk()
@@ -200,6 +215,10 @@ def change():
         im=db.cursor()
         im.execute("""UPDATE user_info SET goal=? where username=?""",(value,user))
         db.commit()
+        master.destroy()
+        welcome_window()
+
+    def back():
         master.destroy()
         welcome_window()
 
@@ -225,62 +244,203 @@ def change():
 
     update_button=Button(master,text="Update",width=30,command=readrbutton)
     update_button.grid(row=10,column=1,columnspan=2)
+    back_button=Button(master,text="<< Back",width=30,command=back)
+    back_button.grid(row=11,column=1,columnspan=2)
 
     mainloop()
 
-def quick_add_calorie():
+def my_food_add():
 
     master=Tk()
-    kcal_label=Label(master,text="Kcal: ")
-    food_name=Label(master,text="Food Name: ")
+    kcal_label=Label(master,text="Kcal (Required): ")
+    food_name_label=Label(master,text="Food Name (Required): ")
+
+    fat_label=Label(master,text="Fat (Optional): ")
+    carb_label=Label(master,text="Carbs (Optional): ")
+    protein_label=Label(master,text="Protein (Optional): ")
+    quantity_label=Label(master,text="Quantity (Required): ")
 
     kcal_entry=Entry(master,width=30)
     food_name_entry=Entry(master,width=30)
+    fat_entry=Entry(master,width=30)
+    carb_entry=Entry(master,width=30)
+    protein_entry=Entry(master,width=30)
+    quantity_entry=Entry(master,width=30)
 
     kcal_label.grid(row=2,column=1)
     kcal_entry.grid(row=2,column=2)
-    food_name.grid(row=1,column=1)
+    food_name_label.grid(row=1,column=1)
     food_name_entry.grid(row=1,column=2)
+    fat_label.grid(row=3,column=1)
+    fat_entry.grid(row=3,column=2)
+    carb_label.grid(row=4,column=1)
+    carb_entry.grid(row=4,column=2)
+    protein_label.grid(row=5,column=1)
+    protein_entry.grid(row=5,column=2)
+    quantity_label.grid(row=6,column=1)
+    quantity_entry.grid(row=6,column=2)
 
     def add():
         user=userlst[0]
         now = time.localtime(time.time())
         year, month, day, hour, minute, second, weekday, yearday, daylight = now
+        food_name=food_name_entry.get()
         kcal=float(kcal_entry.get())
-        carbs=0
-        protein=0
-        fat=0
-        amount=1
+        if fat_entry.get()=="":
+            fat=0
+        else:
+            fat=float(fat_entry.get())
+        if carb_entry.get()=="":
+            carbs=0
+        else:
+            carbs=float(carb_entry.get())
+        if protein_entry.get()=="":
+            protein=0
+        else:
+            protein=float(protein_entry.get())
+        amount=float(quantity_entry.get())
         weight2=userlst[2]
-        data=(user,weight2,year,month,day,kcal,carbs,protein,fat,amount)
+        data=(user,weight2,year,month,day,food_name,kcal,carbs,protein,fat,amount)
         db=sqlite3.connect("user_data.db")
         im=db.cursor()
-        im.execute("""INSERT INTO user_info2 VALUES (?,?,?,?,?,?,?,?,?,?)""",data)
+        im.execute("""INSERT INTO user_info2 VALUES (?,?,?,?,?,?,?,?,?,?,?)""",data)
         im.close()
         db.commit()
         db.close()
         master.destroy()
         welcome_window()
 
+    def back():
+        master.destroy()
+        welcome_window()
+
 
     add_button=Button(master,text="Add",width=60,command=add)
-    add_button.grid(row=3,column=1,columnspan=2)
+    add_button.grid(row=7,column=1,columnspan=2)
+    back_button=Button(master,text="<< Back", width=60,command=back)
+    back_button.grid(row=8,column=1,columnspan=2)
+
     master.mainloop()
+
+def add_food():
+    master=Tk()
+
+    search_food_label=Label(master,text="Search Food: ")
+    search_food_entry=Entry(master,width=30)
+
+    def back():
+        master.destroy()
+        welcome_window()
+
+    def search():
+        selection_index=[]
+        master2=Tk()
+        frame=Frame(master2)
+        frame2=Frame(master2)
+        search_word=search_food_entry.get()
+        searchresult=database_call_food(search_word)
+        sb=Scrollbar(frame,orient=VERTICAL)
+
+        listbox=Listbox(frame,selectmode=SINGLE,yscrollcommand=sb.set,width=100)
+        sb.config(command=listbox.yview)
+
+        for item in searchresult:
+            listbox.insert(END,item)
+
+
+        def listbox_click(z):
+                value=listbox.curselection()
+                selection_index.append(int(value[0]))
+
+        def select():
+            master2.destroy()
+            master3=Tk()
+            db=sqlite3.connect("food_database.db")
+            im=db.cursor()
+            selection=selection_index[len(selection_index)-1]
+            selection_name=searchresult[selection]
+            im.execute("""SELECT * FROM nut_data WHERE Food_Name=?""",(selection_name,))
+            data=im.fetchall()
+
+            for i in data:
+                name_label=Label(master3,text="Food Name: "+str(i[0]))
+                calorie_label=Label(master3,text="Kcal per serving: "+str(i[1]))
+                protein_label=Label(master3,text="Protein: "+str(i[2]))
+                fat_label=Label(master3,text="Fat: "+str(i[3]))
+                carb_label=Label(master3,text="Carbs: "+str(i[4]))
+                serving_size_label=Label(master3,text="Serving Size: "+str(i[5]))
+                quantity_label=Label(master3,text="Quantity: ")
+                quantity_entry=Entry(master3,width=10)
+                ate_this_button=Button(master3,width=60,text="I Ate this!")
+
+                name_label.grid(row=1,column=1,columnspan=2)
+                calorie_label.grid(row=2,column=1,columnspan=2)
+                protein_label.grid(row=3,column=1,columnspan=2)
+                fat_label.grid(row=4,column=1,columnspan=2)
+                carb_label.grid(row=5,column=1,columnspan=2)
+                serving_size_label.grid(row=6,column=1,columnspan=2)
+                quantity_label.grid(row=7,column=1)
+                quantity_entry.grid(row=7,column=2)
+                ate_this_button.grid(row=8,column=1,columnspan=2)
+
+
+
+
+        listbox.pack(side=LEFT,fill=BOTH,expand=1)
+        sb.pack(side=RIGHT,fill=Y)
+        listbox.bind("<ButtonRelease-1>",listbox_click)
+
+        select_button=Button(frame2,width=30,text="Select",command=select)
+        frame.grid(row=0,column=0)
+        frame2.grid(row=0,column=5)
+        select_button.grid(row=1,column=1)
+
+
+
+
+    search_food_button=Button(master,width=30,text="Search",command=search)
+    back_button=Button(master,text="<< Back",width=30,command=back)
+    search_food_label.grid(row=1,column=1)
+    search_food_entry.grid(row=1,column=2)
+    search_food_button.grid(row=2,column=1,columnspan=2)
+    back_button.grid(row=3,column=1,columnspan=2)
 
 def welcome_window():
     db=sqlite3.connect("user_data.db")
     im=db.cursor()
+    im2=db.cursor()
+
     user=userlst[0]
+    calorie_consumed=[]
+    fat_consumed=[]
+    protein_consumed=[]
+    carbs_consumed=[]
     im.execute("""SELECT * FROM  user_info WHERE username=?""",(user,))
+    now = time.localtime(time.time())
+    year, month, day, hour, minute, second, weekday, yearday, daylight = now
+    im2.execute("""SELECT kcal,carbs,protein,fat,amount FROM user_info2 WHERE username=? and year=? and month=? and day=? """,(user,year,month,day))
     data=im.fetchone()
+    data2=im2.fetchall()
+    for i in data2:
+        total_kcal=i[0]*i[4]
+        total_carbs=i[1]*i[4]
+        total_protein=i[2]*i[4]
+        total_fat=i[3]*i[4]
+        calorie_consumed.append(total_kcal)
+        fat_consumed.append(total_fat)
+        protein_consumed.append(total_protein)
+        carbs_consumed.append(total_carbs)
+
     userlst.append(data[8])
     weight_lost=data[3]-data[8]
+
     root4=Tk()
     root4.title("Calorie Counter")
 
     kcal_goal=user_calorie_goal(userlst)
     bmi=calculate_body_mass_index(userlst)
     user_state=status(bmi)
+    kcal_left=kcal_goal-sum(calorie_consumed)
 
     def update_w():
         root4.destroy()
@@ -290,22 +450,26 @@ def welcome_window():
         root4.destroy()
         change()
 
-    def quick_add():
+    def myfood_add():
         root4.destroy()
-        quick_add_calorie()
+        my_food_add()
+
+    def add_food_command():
+        root4.destroy()
+        add_food()
 
     kcal_goal_label=Label(root4,text="Recommended daily kcal intake: ")
-    kcal_goal_label2=Label(root4,text=str(kcal_goal)+"kcal")
+    kcal_goal_label2=Label(root4,text=str(kcal_goal)+" kcal")
     user_state_label=Label(root4,text="BMI: "+str(bmi)+" ("+user_state+")")
     calorie_left_label=Label(root4,text="Calorie Left: ")
-    calorie_left_label2=Label(root4,text=str(kcal_goal)+"kcal")
+    calorie_left_label2=Label(root4,text=str(kcal_left)+" kcal")
 
     weight_lost_label=Label(root4,text="Weight Lost: ")
-    weight_lost_label2=Label(root4,text=str(weight_lost))
+    weight_lost_label2=Label(root4,text=str(weight_lost)+" kg")
     update_weight_button=Button(root4,text="Update Weight",width=30,command=update_w)
     change_goal_button=Button(root4,text="Change Goal",width=30,command=change_goal)
-    add_food_button=Button(root4,text="Add Food",width=30)
-    quick_add_button=Button(root4,text="Quick-Add Calories",width=30,command=quick_add)
+    add_food_button=Button(root4,text="Add Food",width=30,command=add_food_command)
+    quick_add_button=Button(root4,text="My Food",width=30,command=myfood_add)
     exit_button=Button(root4,text="Exit",command=root4.destroy,width=30)
 
     kcal_goal_label.grid(row=1,column=1)
@@ -323,20 +487,31 @@ def welcome_window():
 
     root4.mainloop()
 
-root=Tk()
-root.title("Log In or Register")
+def first_window():
+    root=Tk()
+    root.title("Log In or Register")
 
-content=Frame(root)
-login=Button(content,text="Log In",command=logInWindow,width=15)
-newuser=Button(content,text="New User",command=newUserWindow,width=15)
-loginlbl=Label(content,text="Select")
-orlbl=Label(content,text="Or")
-exit_button=Button(content,text="Exit",command=root.destroy,width=15)
-content.grid(row=0,column=0)
-loginlbl.grid(row=1,column=1,columnspan=2)
-login.grid(row=2,column=1)
-newuser.grid(row=2,column=2)
-orlbl.grid(row=3,column=1,columnspan=2)
-exit_button.grid(row=4,column=1,columnspan=2)
-root.mainloop()
+    content=Frame(root)
 
+    def log_in():
+        root.destroy()
+        logInWindow()
+
+    def new_user():
+        root.destroy()
+        newUserWindow()
+
+    login=Button(content,text="Log In",command=log_in,width=15)
+    newuser=Button(content,text="New User",command=new_user,width=15)
+    loginlbl=Label(content,text="Select")
+    orlbl=Label(content,text="Or")
+    exit_button=Button(content,text="Exit",command=root.destroy,width=15)
+    content.grid(row=0,column=0)
+    loginlbl.grid(row=1,column=1,columnspan=2)
+    login.grid(row=2,column=1)
+    newuser.grid(row=2,column=2)
+    orlbl.grid(row=3,column=1,columnspan=2)
+    exit_button.grid(row=4,column=1,columnspan=2)
+    root.mainloop()
+
+first_window()
