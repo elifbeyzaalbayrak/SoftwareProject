@@ -249,6 +249,21 @@ def change():
 
     mainloop()
 
+def diary():
+    master=Tk()
+    user=userlst[0]
+    food_di=food_diary(user)
+    for food in food_di:
+        print food
+
+    def back():
+        master.destroy()
+        welcome_window()
+
+    back_button=Button(master,width=30,text="<< Back",command=back)
+    back_button.grid(row=1,column=1)
+    master.mainloop()
+
 def my_food_add():
 
     master=Tk()
@@ -440,6 +455,7 @@ def welcome_window():
     kcal_goal=user_calorie_goal(userlst)
     bmi=calculate_body_mass_index(userlst)
     user_state=status(bmi)
+    kcal_consumed=sum(calorie_consumed)
     kcal_left=kcal_goal-sum(calorie_consumed)
 
     def update_w():
@@ -458,32 +474,46 @@ def welcome_window():
         root4.destroy()
         add_food()
 
+    def diary_command():
+        root4.destroy()
+        diary()
+
     kcal_goal_label=Label(root4,text="Recommended daily kcal intake: ")
     kcal_goal_label2=Label(root4,text=str(kcal_goal)+" kcal")
-    user_state_label=Label(root4,text="BMI: "+str(bmi)+" ("+user_state+")")
+    user_state_label=Label(root4,text="BMI: ")
+    user_state_label2=Label(root4,text=str(bmi)+" ("+user_state+")")
+    calorie_consumed_label=Label(root4,text="Calorie Consumed: ")
+    calorie_consumed_label2=Label(root4,text=str(kcal_consumed)+" kcal")
     calorie_left_label=Label(root4,text="Calorie Left: ")
     calorie_left_label2=Label(root4,text=str(kcal_left)+" kcal")
-
     weight_lost_label=Label(root4,text="Weight Lost: ")
     weight_lost_label2=Label(root4,text=str(weight_lost)+" kg")
-    update_weight_button=Button(root4,text="Update Weight",width=30,command=update_w)
-    change_goal_button=Button(root4,text="Change Goal",width=30,command=change_goal)
-    add_food_button=Button(root4,text="Add Food",width=30,command=add_food_command)
-    quick_add_button=Button(root4,text="My Food",width=30,command=myfood_add)
-    exit_button=Button(root4,text="Exit",command=root4.destroy,width=30)
+
+    update_weight_button=Button(root4,text="Update Weight",width=40,command=update_w)
+    change_goal_button=Button(root4,text="Change Goal",width=40,command=change_goal)
+    add_food_button=Button(root4,text="Add Food",width=40,command=add_food_command)
+    quick_add_button=Button(root4,text="My Food",width=40,command=myfood_add)
+    diary_button=Button(root4,text="Diary",width=40,command=diary_command)
+    exit_button=Button(root4,text="Exit",command=root4.destroy,width=40)
+    blank=Label(root4)
 
     kcal_goal_label.grid(row=1,column=1)
     kcal_goal_label2.grid(row=1,column=2)
-    user_state_label.grid(row=2,column=1,columnspan=2)
-    calorie_left_label.grid(row=3,column=1)
-    calorie_left_label2.grid(row=3,column=2)
-    weight_lost_label2.grid(row=4,column=2)
-    weight_lost_label.grid(row=4,column=1)
-    update_weight_button.grid(row=1,column=3)
-    change_goal_button.grid(row=2,column=3)
-    add_food_button.grid(row=3,column=3)
-    quick_add_button.grid(row=4,column=3)
-    exit_button.grid(row=5,column=1,columnspan=3)
+    user_state_label.grid(row=2,column=1)
+    user_state_label2.grid(row=2,column=2)
+    calorie_consumed_label.grid(row=3,column=1)
+    calorie_consumed_label2.grid(row=3,column=2)
+    calorie_left_label.grid(row=4,column=1)
+    calorie_left_label2.grid(row=4,column=2)
+    weight_lost_label2.grid(row=5,column=2)
+    weight_lost_label.grid(row=5,column=1)
+    blank.grid(row=6,column=1)
+    update_weight_button.grid(row=7,column=1,columnspan=2)
+    change_goal_button.grid(row=8,column=1,columnspan=2)
+    add_food_button.grid(row=9,column=1,columnspan=2)
+    quick_add_button.grid(row=10,column=1,columnspan=2)
+    diary_button.grid(row=11,column=1,columnspan=2)
+    exit_button.grid(row=12,column=1,columnspan=2)
 
     root4.mainloop()
 

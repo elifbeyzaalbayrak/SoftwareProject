@@ -2,6 +2,7 @@ __author__ = 'elifalbayrak'
 
 import sqlite3
 import math
+import time
 def calculate_basal_metabolic_rate(gender,weight,height,age):
     if gender==1:
         bmr=66.473+(13.7516*weight)+(5.0033*height)-(6.7550*age)
@@ -144,6 +145,17 @@ def database_call_food(searchword):
                 food_list.append(food2)
     return food_list
 
+def food_diary(user):
+    lst=[]
+    db=sqlite3.connect("user_data.db")
+    im=db.cursor()
 
-
+    now = time.localtime(time.time())
+    year, month, day, hour, minute, second, weekday, yearday, daylight = now
+    im.execute("""SELECT food_name,kcal,amount FROM user_info2 WHERE username=? and year=? and month=? and day=?""",(user,year,month,day))
+    data=im.fetchall()
+    for food_name,kcal,amount in data:
+        a="Food Name: "+food_name+"\nTotal Kcal: "+str(kcal*amount)+"\nTotal Servings: "+str(amount)
+        lst.append(a)
+    return lst
 
