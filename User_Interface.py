@@ -1,8 +1,6 @@
 __author__ = 'elifalbayrak'
 from Tkinter import *
 import tkMessageBox
-import sqlite3
-import time
 from functions import *
 
 userlst=[]
@@ -56,6 +54,7 @@ def logInWindow():
 def newUserWindow():
     root3=Tk()
     root3.title("New User")
+
 
     select_username_lbl=Label(root3,text="User Name: ")
     select_password_lbl=Label(root3,text="Password: ")
@@ -250,19 +249,9 @@ def change():
     mainloop()
 
 def diary():
-    master=Tk()
     user=userlst[0]
     food_di=food_diary(user)
-    for food in food_di:
-        print food
-
-    def back():
-        master.destroy()
-        welcome_window()
-
-    back_button=Button(master,width=30,text="<< Back",command=back)
-    back_button.grid(row=1,column=1)
-    master.mainloop()
+    func_diary(food_di,welcome_window)
 
 def my_food_add():
 
@@ -377,6 +366,8 @@ def add_food():
             im.execute("""SELECT * FROM nut_data WHERE Food_Name=?""",(selection_name,))
             data=im.fetchall()
 
+
+
             for i in data:
                 name_label=Label(master3,text="Food Name: "+str(i[0]))
                 calorie_label=Label(master3,text="Kcal per serving: "+str(i[1]))
@@ -386,7 +377,7 @@ def add_food():
                 serving_size_label=Label(master3,text="Serving Size: "+str(i[5]))
                 quantity_label=Label(master3,text="Quantity: ")
                 quantity_entry=Entry(master3,width=10)
-                ate_this_button=Button(master3,width=60,text="I Ate this!")
+
 
                 name_label.grid(row=1,column=1,columnspan=2)
                 calorie_label.grid(row=2,column=1,columnspan=2)
@@ -396,9 +387,28 @@ def add_food():
                 serving_size_label.grid(row=6,column=1,columnspan=2)
                 quantity_label.grid(row=7,column=1)
                 quantity_entry.grid(row=7,column=2)
-                ate_this_button.grid(row=8,column=1,columnspan=2)
+            def ate_this():
+                db2=sqlite3.connect("user_data.db")
+                im2=db2.cursor()
+                now = time.localtime(time.time())
+                year, month, day, hour, minute, second, weekday, yearday, daylight = now
+                user=userlst[0]
+                weight2=userlst[2]
+                amount=float(quantity_entry.get())
+                for a in data:
+                    food_name=a[0]
+                    kcal=a[1]
+                    protein=a[2]
+                    fat=a[3]
+                    carbs=a[4]
+                    im2.execute("""INSERT INTO user_info2 VALUES (?,?,?,?,?,?,?,?,?,?,?) """,(user,weight2,year,month,day,food_name,kcal,carbs,protein,fat,amount))
+                    db2.commit()
+                    im2.close()
+                    db2.close()
+                master3.destroy()
 
-
+            ate_this_button=Button(master3,width=60,text="I Ate this!",command=ate_this)
+            ate_this_button.grid(row=8,column=1,columnspan=2)
 
 
         listbox.pack(side=LEFT,fill=BOTH,expand=1)
@@ -520,7 +530,6 @@ def welcome_window():
 def first_window():
     root=Tk()
     root.title("Log In or Register")
-
     content=Frame(root)
 
     def log_in():

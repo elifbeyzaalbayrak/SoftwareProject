@@ -3,6 +3,8 @@ __author__ = 'elifalbayrak'
 import sqlite3
 import math
 import time
+from Tkinter import *
+
 def calculate_basal_metabolic_rate(gender,weight,height,age):
     if gender==1:
         bmr=66.473+(13.7516*weight)+(5.0033*height)-(6.7550*age)
@@ -155,7 +157,28 @@ def food_diary(user):
     im.execute("""SELECT food_name,kcal,amount FROM user_info2 WHERE username=? and year=? and month=? and day=?""",(user,year,month,day))
     data=im.fetchall()
     for food_name,kcal,amount in data:
-        a="Food Name: "+food_name+"\nTotal Kcal: "+str(kcal*amount)+"\nTotal Servings: "+str(amount)
+        a="Food Name: "+food_name+"\nTotal Kcal: "+str(kcal*amount)+"\nTotal Servings: "+str(amount)+"\n"+""+"\n"""
         lst.append(a)
     return lst
+
+
+
+def func_diary(lst,func):
+    master=Tk()
+    text=Text(master)
+    for i in lst:
+        text.insert(END,i)
+    text.grid(row=1,column=1)
+
+    def back():
+        master.destroy()
+        func()
+
+    back_button=Button(master,width=30,text="<< Back",command=back)
+    back_button.grid(row=2,column=1)
+    master.mainloop()
+
+
+
+
 

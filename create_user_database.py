@@ -8,7 +8,7 @@ now = time.localtime(time.time())
 year, month, day, hour, minute, second, weekday, yearday, daylight = now
 #im.execute("""CREATE TABLE user_info2 (username,weight2,year,month,day,food_name,kcal,carbs,protein,fat,amount)""")
 
-im.execute("""SELECT * FROM user_info2 """)
+im.execute("""SELECT * FROM user_info """)
 veriler=im.fetchall()
 for i in veriler:
     print i
