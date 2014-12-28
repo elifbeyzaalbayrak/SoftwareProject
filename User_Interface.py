@@ -7,6 +7,7 @@ userlst=[]
 
 def logInWindow():
     root2=Tk()
+    root2.geometry("+200+100")
     root2.title("Log In")
 
     label_username=Label(root2,text="Enter User Name: ")
@@ -54,7 +55,7 @@ def logInWindow():
 def newUserWindow():
     root3=Tk()
     root3.title("New User")
-
+    root3.geometry("+200+100")
 
     select_username_lbl=Label(root3,text="User Name: ")
     select_password_lbl=Label(root3,text="Password: ")
@@ -176,6 +177,8 @@ def newUserWindow():
 
 def update_weight():
     root5=Tk()
+    root5.geometry("+200+100")
+    root5.title("Update Weight")
     update_weight_label=Label(root5,text="Update Weight: ")
     weight_entry=Entry(root5,width=15)
     update_weight_label.grid(row=1,column=1)
@@ -205,6 +208,8 @@ def update_weight():
 
 def change():
     master = Tk()
+    master.geometry("+200+100")
+    master.title("Change Goal")
     v = IntVar()
 
     def readrbutton():
@@ -256,6 +261,8 @@ def diary():
 def my_food_add():
 
     master=Tk()
+    master.title("My Food")
+    master.geometry("+200+100")
     kcal_label=Label(master,text="Kcal (Required): ")
     food_name_label=Label(master,text="Food Name (Required): ")
 
@@ -328,7 +335,8 @@ def my_food_add():
 
 def add_food():
     master=Tk()
-
+    master.geometry("+200+100")
+    master.title("Add Food")
     search_food_label=Label(master,text="Search Food: ")
     search_food_entry=Entry(master,width=30)
 
@@ -339,6 +347,8 @@ def add_food():
     def search():
         selection_index=[]
         master2=Tk()
+        master2.title("Search Food")
+        master2.geometry("+200+100")
         frame=Frame(master2)
         frame2=Frame(master2)
         search_word=search_food_entry.get()
@@ -359,6 +369,8 @@ def add_food():
         def select():
             master2.destroy()
             master3=Tk()
+            master3.geometry("+200+100")
+            master3.title("Selection")
             db=sqlite3.connect("food_database.db")
             im=db.cursor()
             selection=selection_index[len(selection_index)-1]
@@ -461,6 +473,7 @@ def welcome_window():
 
     root4=Tk()
     root4.title("Calorie Counter")
+    root4.geometry("+200+100")
 
     kcal_goal=user_calorie_goal(userlst)
     bmi=calculate_body_mass_index(userlst)
@@ -498,6 +511,8 @@ def welcome_window():
     calorie_left_label2=Label(root4,text=str(kcal_left)+" kcal")
     weight_lost_label=Label(root4,text="Weight Lost: ")
     weight_lost_label2=Label(root4,text=str(weight_lost)+" kg")
+    current_weight_label=Label(root4,text="Current Weight: ")
+    current_weight_label2=Label(root4,text=str(data[8])+" kg")
 
     update_weight_button=Button(root4,text="Update Weight",width=40,command=update_w)
     change_goal_button=Button(root4,text="Change Goal",width=40,command=change_goal)
@@ -517,18 +532,22 @@ def welcome_window():
     calorie_left_label2.grid(row=4,column=2)
     weight_lost_label2.grid(row=5,column=2)
     weight_lost_label.grid(row=5,column=1)
-    blank.grid(row=6,column=1)
-    update_weight_button.grid(row=7,column=1,columnspan=2)
-    change_goal_button.grid(row=8,column=1,columnspan=2)
-    add_food_button.grid(row=9,column=1,columnspan=2)
-    quick_add_button.grid(row=10,column=1,columnspan=2)
-    diary_button.grid(row=11,column=1,columnspan=2)
-    exit_button.grid(row=12,column=1,columnspan=2)
+    current_weight_label.grid(row=6,column=1)
+    current_weight_label2.grid(row=6,column=2)
+
+    blank.grid(row=7,column=1)
+    update_weight_button.grid(row=8,column=1,columnspan=2)
+    change_goal_button.grid(row=9,column=1,columnspan=2)
+    add_food_button.grid(row=10,column=1,columnspan=2)
+    quick_add_button.grid(row=11,column=1,columnspan=2)
+    diary_button.grid(row=12,column=1,columnspan=2)
+    exit_button.grid(row=13,column=1,columnspan=2)
 
     root4.mainloop()
 
 def first_window():
     root=Tk()
+    root.geometry("+200+100")
     root.title("Log In or Register")
     content=Frame(root)
 

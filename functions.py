@@ -3,6 +3,7 @@ __author__ = 'elifalbayrak'
 import sqlite3
 import math
 import time
+from ttk import *
 from Tkinter import *
 
 def calculate_basal_metabolic_rate(gender,weight,height,age):
@@ -157,24 +158,37 @@ def food_diary(user):
     im.execute("""SELECT food_name,kcal,amount FROM user_info2 WHERE username=? and year=? and month=? and day=?""",(user,year,month,day))
     data=im.fetchall()
     for food_name,kcal,amount in data:
-        a="Food Name: "+food_name+"\nTotal Kcal: "+str(kcal*amount)+"\nTotal Servings: "+str(amount)+"\n"+""+"\n"""
+        a=(food_name,kcal*amount,amount)
         lst.append(a)
     return lst
 
-
-
 def func_diary(lst,func):
     master=Tk()
-    text=Text(master)
+    master.geometry("+200+100")
+    master.title("Diary")
+    tree=Treeview(master)
+    tree["columns"]=("Food Name","Total Kcal","Total Servings")
+    tree.column("Food Name", width=250)
+    tree.column("Total Kcal", width=100)
+    tree.column("Total Servings",width=100)
+    tree.heading("Food Name", text="Food Name")
+    tree.heading("Total Kcal", text="Total Kcal")
+    tree.heading("Total Servings",text="Total Servings")
+
     for i in lst:
-        text.insert(END,i)
-    text.grid(row=1,column=1)
+        tree.insert("",END,values=i)
+
+
+    tree.pack()
+
+
 
     def back():
         master.destroy()
         func()
 
     back_button=Button(master,width=30,text="<< Back",command=back)
+    tree.grid(row=1,column=1)
     back_button.grid(row=2,column=1)
     master.mainloop()
 
