@@ -258,10 +258,10 @@ def diary():
     food_di=food_diary(user)
     func_diary(food_di,welcome_window)
 
-def my_food_add():
+def quick_food_add():
 
     master=Tk()
-    master.title("My Food")
+    master.title("Quick Add")
     master.geometry("+200+100")
     kcal_label=Label(master,text="Kcal (Required): ")
     food_name_label=Label(master,text="Food Name (Required): ")
@@ -489,9 +489,9 @@ def welcome_window():
         root4.destroy()
         change()
 
-    def myfood_add():
+    def quick_add():
         root4.destroy()
-        my_food_add()
+        quick_food_add()
 
     def add_food_command():
         root4.destroy()
@@ -517,7 +517,7 @@ def welcome_window():
     update_weight_button=Button(root4,text="Update Weight",width=40,command=update_w)
     change_goal_button=Button(root4,text="Change Goal",width=40,command=change_goal)
     add_food_button=Button(root4,text="Add Food",width=40,command=add_food_command)
-    quick_add_button=Button(root4,text="My Food",width=40,command=myfood_add)
+    quick_add_button=Button(root4,text="Quick Food",width=40,command=quick_add)
     diary_button=Button(root4,text="Diary",width=40,command=diary_command)
     exit_button=Button(root4,text="Exit",command=root4.destroy,width=40)
     blank=Label(root4)
