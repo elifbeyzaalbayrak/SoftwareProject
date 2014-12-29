@@ -105,11 +105,11 @@ def user_calorie_goal(lst):
     return math.floor(kcal_goal)
 
 def calculate_body_mass_index(lst):
-    username=lst[0]
-    password=lst[1]
-    db=sqlite3.connect("user_data.db")
+    username=lst[0]#username
+    password=lst[1]#password
+    db=sqlite3.connect("user_data.db")#user databasa
     im=db.cursor()
-    im.execute("""SELECT * FROM user_info where username=? and password=?""",(username,password))
+    im.execute("""SELECT * FROM user_info where username=? and password=?""",(username,password))#takes userinfo
     user_info=im.fetchone()
     height=user_info[4]
     weight2=user_info[8]
